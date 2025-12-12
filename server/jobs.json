@@ -1,0 +1,40 @@
+{
+    "status": "success",
+    "count": 2,
+    "results": [
+        {
+            "job_id": "abc123",
+            "title": "Senior JavaScript Developer",
+            "company": {
+                "display_name": "Tech Corp"
+            },
+            "location": {
+                "display_name": "San Francisco, CA"
+            },
+            "salary_min": 120000,
+            "salary_max": 160000,
+            "salary_currency_code": "USD",
+            "description": "We are looking for an experienced JavaScript developer...",
+            "redirect_url": "https://www.adzuna.com/...",
+            "created": "2024-01-15T10:30:00Z",
+            "contract_type": "permanent"
+        },
+        {
+            "job_id": "def456",
+            "title": "Python Backend Engineer",
+            "company": {
+                "display_name": "StartupXYZ"
+            },
+            "location": {
+                "display_name": "Remote"
+            },
+            "salary_min": 90000,
+            "salary_max": 130000,
+            "salary_currency_code": "USD",
+            "description": "Join our growing team as a Python engineer...",
+            "redirect_url": "https://www.adzuna.com/...",
+            "created": "2024-01-14T14:45:00Z",
+            "contract_type": "permanent"
+        }
+    ]
+}
