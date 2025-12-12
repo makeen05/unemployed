@@ -1,11 +1,14 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
-    const [repoUrl, setRepoUrl] = useState('')
+    const [repoUrl, setRepoUrl] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log('Analyzing:', repoUrl)
+        e.preventDefault();
+        console.log('Analyzing:', repoUrl);
+        navigate('/results');
     }
 
     return (
