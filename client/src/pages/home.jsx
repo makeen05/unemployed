@@ -12,20 +12,41 @@ function Home() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
+      console.log('🔄 Step 1: Analyzing repo...'); 
       const response = await axios.post('http://localhost:3000/api/analyze', {
         repoUrl
       });
+  
+      const repoData = response.data.data;
+      console.log('✅ Step 1 complete - repoData:', repoData); 
+  
+      console.log('🔄 Step 2: Scraping jobs...'); 
+      const jobsResponse = await axios.post('http://localhost:3000/api/scrape-jobs', {
+        repoData
+      });
+      
+      console.log('✅ Step 2 complete - Full response:', jobsResponse.data); 
+      console.log('📊 Jobs array:', jobsResponse.data.jobs); 
+      console.log('📊 Jobs count:', jobsResponse.data.jobs?.length); 
+      console.log('📊 Is array?', Array.isArray(jobsResponse.data.jobs)); 
       
       // Navigate to results page with data
-      navigate('/results', { state: { data: response.data } });
+      console.log('🚀 Navigating to /jobs with state:', { repoData, jobs: jobsResponse.data.jobs }); 
+      navigate('/jobs', { 
+        state: { 
+          repoData, 
+          jobs: jobsResponse.data.jobs 
+        } 
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong');
-      console.error('Error:', err);
+      console.error('❌ Error:', err); 
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
