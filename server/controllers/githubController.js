@@ -4,7 +4,7 @@ import axios from 'axios';
 // Helper: Get Octokit instance (creates it with current env vars)
 const getOctokit = () => {
   return new Octokit({ 
-    auth: process.env.GITHUB_TOKEN 
+    auth: process.env.GITHUB_TOKEN?.trim() 
   });
 };
 

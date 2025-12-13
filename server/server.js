@@ -24,4 +24,6 @@ app.get('/', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Express Server running on http://localhost:${PORT}`);
+  console.log(`🔑 GitHub Token loaded: ${process.env.GITHUB_TOKEN ? '✅' : '❌'}`);
+  
 });

@@ -2,7 +2,7 @@ import { ApifyClient } from 'apify-client';
 
 export const scrapeJobs = async (req, res) => {
   try {
-    const { repoData } = req.body;
+    const { repoData, city, country, minSalary } = req.body;
 
     const client = new ApifyClient({
       token: process.env.APIFY_TOKEN,
@@ -15,10 +15,9 @@ export const scrapeJobs = async (req, res) => {
       maxResults: 10,
       searchTerm: searchTerm,
       sortBy: "KeywordRelevance",
-      country: "australia",
-      suburbOrCity: "sydney",
-      state: "nsw",
-      radius: 30,
+      country: country,
+      suburbOrCity: city,
+      salaryMin: minSalary
     };
 
     const run = await client.actor("websift/seek-job-scraper").call(input);
