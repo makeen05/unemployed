@@ -12,17 +12,34 @@ function Home() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
+      console.log('🔄 Step 1: Analyzing repo...'); 
       const response = await axios.post('http://localhost:3000/api/analyze', {
         repoUrl
       });
+  
+      const repoData = response.data.data;
+      console.log('✅ Step 1 complete - repoData:', repoData); 
+  
+      console.log('🔄 Step 2: Scraping jobs...'); 
+      const jobsResponse = await axios.post('http://localhost:3000/api/scrape-jobs', {
+        repoData
+      });
       
-      // Navigate to results page with data
-      navigate('/results', { state: { data: response.data } });
+      console.log('✅ Step 2 complete - Full response:', jobsResponse.data); 
+      
+      // Navigate to jobs page with both repoData and AI analysis
+      navigate('/jobs', { 
+        state: { 
+          repoData, 
+          jobs: jobsResponse.data.jobs,
+          aiAnalysis: repoData.aiAnalysis // Pass AI analysis too
+        } 
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong');
-      console.error('Error:', err);
+      console.error('❌ Error:', err); 
       setLoading(false);
     }
   };
