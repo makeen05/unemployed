@@ -4,8 +4,11 @@ import axios from 'axios';
 
 function Home() {
   const [repoUrl, setRepoUrl] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [minSalary, setMinSalary] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -24,7 +27,10 @@ function Home() {
   
       console.log('🔄 Step 2: Scraping jobs...'); 
       const jobsResponse = await axios.post('http://localhost:3000/api/scrape-jobs', {
-        repoData
+        repoData, 
+        city, 
+        country, 
+        minSalary: minSalary ? parseInt(minSalary) : undefined
       });
       
       console.log('✅ Step 2 complete - Full response:', jobsResponse.data); 
@@ -34,7 +40,9 @@ function Home() {
         state: { 
           repoData, 
           jobs: jobsResponse.data.jobs,
-          aiAnalysis: repoData.aiAnalysis // Pass AI analysis too
+          aiAnalysis: repoData.aiAnalysis,
+          city,
+          country
         } 
       });
     } catch (err) {
@@ -48,7 +56,7 @@ function Home() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900">
             unemployed.
           </h1>
@@ -73,6 +81,59 @@ function Home() {
                 disabled={loading}
               />
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Country
+                </label>
+                <select
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-200 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+                  disabled={loading}
+                >
+                  <option value="">Select Country</option>
+                  <option value="australia">Australia</option>
+                  <option value="hongkong">Hong Kong</option>
+                  <option value="indonesia">Indonesia</option>
+                  <option value="malaysia">Malaysia</option>
+                  <option value="new zealand">New Zealand</option>
+                  <option value="philippines">Philippines</option>
+                  <option value="singapore">Singapore</option>
+                  <option value="thailand">Thailand</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  City
+                </label>
+                <input
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="Enter city"
+                  className="w-full px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-200 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Minimum Salary (optional)
+              </label>
+              <input
+                type="number"
+                value={minSalary}
+                onChange={(e) => setMinSalary(e.target.value)}
+                placeholder="e.g., 80000"
+                className="w-full px-4 py-3 bg-gray-50 text-gray-900 rounded-lg border border-gray-200 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+                disabled={loading}
+              />
+            </div>
+            
             <button
               type="submit"
               disabled={loading || !repoUrl}

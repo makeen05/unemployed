@@ -11,7 +11,7 @@ const stripHtml = (html) => {
 export default function Jobs() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { repoData, jobs, aiAnalysis } = location.state || {};
+  const { repoData, jobs, aiAnalysis, city, country } = location.state || {};
 
   if (!repoData || !jobs || jobs.length === 0) {
     return (
@@ -121,7 +121,9 @@ export default function Jobs() {
                 <p className="text-5xl font-bold text-gray-900">{jobs.length}</p>
                 <span className="text-lg text-gray-600 font-medium">positions</span>
               </div>
-              <p className="text-gray-600 text-sm">📍 Found in Sydney, NSW</p>
+               <p className="text-gray-600 text-sm">
+                📍 Found in <span className="capitalize">{city}</span>{country ? <>, <span className="capitalize">{country}</span></> : ''}
+              </p>
             </div>
           </div>
         </div>
