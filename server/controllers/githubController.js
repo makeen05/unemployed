@@ -1,4 +1,5 @@
 import { Octokit } from 'octokit';
+import axios from 'axios';
 
 // Helper: Get Octokit instance (creates it with current env vars)
 const getOctokit = () => {
@@ -129,7 +130,21 @@ export const analyzeRepository = async (req, res) => {
       }
     }
 
-    // STEP 7: Prepare response
+    // STEP 7: Send to AI for analysis (CHANGED PORT TO 5001)
+    console.log('🤖 Sending to AI for analysis...');
+    
+    const aiResponse = await axios.post('http://localhost:5001/analyze-repo', {
+      owner,
+      repo,
+      languages,
+      readme: readmeContent.substring(0, 3000),
+      files: fileContents
+    });
+
+    const aiAnalysis = aiResponse.data.analysis;
+    console.log('✅ AI analysis received');
+
+    // STEP 8: Prepare final response
     const analysisData = {
       owner,
       repo,
@@ -138,6 +153,7 @@ export const analyzeRepository = async (req, res) => {
       languages,
       files: fileContents,
       fileCount: Object.keys(fileContents).length,
+      aiAnalysis: aiAnalysis, // Include AI-generated keywords and description
       timestamp: new Date().toISOString(),
     };
 
