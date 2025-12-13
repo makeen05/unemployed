@@ -28,16 +28,13 @@ function Home() {
       });
       
       console.log('✅ Step 2 complete - Full response:', jobsResponse.data); 
-      console.log('📊 Jobs array:', jobsResponse.data.jobs); 
-      console.log('📊 Jobs count:', jobsResponse.data.jobs?.length); 
-      console.log('📊 Is array?', Array.isArray(jobsResponse.data.jobs)); 
       
-      // Navigate to results page with data
-      console.log('🚀 Navigating to /jobs with state:', { repoData, jobs: jobsResponse.data.jobs }); 
+      // Navigate to jobs page with both repoData and AI analysis
       navigate('/jobs', { 
         state: { 
           repoData, 
-          jobs: jobsResponse.data.jobs 
+          jobs: jobsResponse.data.jobs,
+          aiAnalysis: repoData.aiAnalysis // Pass AI analysis too
         } 
       });
     } catch (err) {
@@ -46,7 +43,6 @@ function Home() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">

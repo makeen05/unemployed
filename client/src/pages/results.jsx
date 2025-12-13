@@ -121,7 +121,7 @@ function Results() {
             </div>
           </div>
 
-          {/* Files Analyzed */}
+          {/* Files Analyzed
           <div className="bg-white rounded-2xl p-6 border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Files Analyzed ({Object.keys(result.data.files).length})
@@ -148,7 +148,7 @@ function Results() {
                 </details>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

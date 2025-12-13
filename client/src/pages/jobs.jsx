@@ -11,7 +11,7 @@ const stripHtml = (html) => {
 export default function Jobs() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { repoData, jobs } = location.state || {};
+  const { repoData, jobs, aiAnalysis } = location.state || {};
 
   if (!repoData || !jobs || jobs.length === 0) {
     return (
@@ -41,27 +41,29 @@ export default function Jobs() {
           ← Back to Search
         </button>
 
+        {/* Top Section - Repo Info, AI Analysis, and Jobs Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          
           {/* Repo Info */}
-          <div className="lg:col-span-1 border-b lg:border-b-0 lg:border-r border-gray-200 pb-8 lg:pb-0 lg:pr-8">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase mb-4">Repository</h2>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{repoData.repo}</h1>
-            <p className="text-gray-600 text-sm mb-4">{repoData.description}</p>
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Repository</h2>
+            <h1 className="text-2xl font-bold text-gray-900 mb-3">{repoData.repo}</h1>
+            <p className="text-gray-600 text-sm mb-6 leading-relaxed">{repoData.description}</p>
             
-            <div className="space-y-3 text-sm">
-              <div>
-                <p className="text-gray-500">Stars</p>
-                <p className="font-semibold text-gray-900">⭐ {repoData.stars || 0}</p>
+            <div className="space-y-4 text-sm">
+              <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                <span className="text-gray-500">Stars</span>
+                <span className="font-semibold text-gray-900">⭐ {repoData.stars || 0}</span>
               </div>
-              <div>
-                <p className="text-gray-500">Forks</p>
-                <p className="font-semibold text-gray-900">🍴 {repoData.forks || 0}</p>
+              <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                <span className="text-gray-500">Forks</span>
+                <span className="font-semibold text-gray-900">🍴 {repoData.forks || 0}</span>
               </div>
-              <div>
-                <p className="text-gray-500">Languages</p>
-                <div className="flex flex-wrap gap-2 mt-2">
+              <div className="pt-2">
+                <p className="text-gray-500 mb-3">Languages</p>
+                <div className="flex flex-wrap gap-2">
                   {repoData.languages?.map(lang => (
-                    <span key={lang} className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
+                    <span key={lang} className="px-3 py-1.5 bg-white text-gray-700 rounded-lg text-xs font-medium border border-gray-200">
                       {lang}
                     </span>
                   ))}
@@ -70,11 +72,57 @@ export default function Jobs() {
             </div>
           </div>
 
-          {/* Jobs Summary */}
-          <div className="lg:col-span-2">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase mb-4">Matching Jobs</h2>
-            <p className="text-3xl font-bold text-gray-900 mb-2">{jobs.length}</p>
-            <p className="text-gray-600 text-sm">positions found in Sydney, NSW</p>
+          {/* AI Analysis & Job Keywords */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* AI Analysis */}
+            {aiAnalysis && (
+              <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-2xl">🤖</span>
+                  <h2 className="text-xs font-semibold text-blue-900 uppercase tracking-wide">AI Analysis</h2>
+                </div>
+                <p className="text-gray-800 text-sm leading-relaxed mb-4">
+                  {aiAnalysis.project_description}
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold">
+                    {aiAnalysis.role_focus}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Job Keywords */}
+            {aiAnalysis && aiAnalysis.keywords && (
+              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-2xl">💼</span>
+                  <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                    Recommended Keywords
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {aiAnalysis.keywords.map((keyword, index) => (
+                    <span 
+                      key={index} 
+                      className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Jobs Summary */}
+            <div className="bg-green-50 rounded-xl p-6 border border-green-200">
+              <h2 className="text-xs font-semibold text-green-900 uppercase tracking-wide mb-3">Matching Jobs</h2>
+              <div className="flex items-baseline gap-3 mb-2">
+                <p className="text-5xl font-bold text-gray-900">{jobs.length}</p>
+                <span className="text-lg text-gray-600 font-medium">positions</span>
+              </div>
+              <p className="text-gray-600 text-sm">📍 Found in Sydney, NSW</p>
+            </div>
           </div>
         </div>
 
@@ -116,14 +164,14 @@ export default function Jobs() {
                     </span>
                   )}
                 </div>
-                {/** this line is fucked */}
-                 
-                <a  href={job.jobLink}
-                  target="_blank" 
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                <a 
+                  href={job.jobLink}
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
                   View Job →
                 </a>
-                
               </div>
             </div>
           ))}
