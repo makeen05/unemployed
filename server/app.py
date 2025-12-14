@@ -19,7 +19,7 @@ try:
         genai.configure(api_key=api_key)
         print("Gemini API configured successfully")
 except Exception as e:
-    print(f" Error initializing Gemini client: {e}")
+    print(f"Error initializing Gemini client: {e}")
 
 
 GEMINI_MODEL = "models/gemini-2.5-flash"
