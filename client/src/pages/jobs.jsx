@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 
-// Helper function to strip HTML tags
 const stripHtml = (html) => {
   if (!html) return '';
   const tmp = document.createElement('DIV');
@@ -33,7 +32,7 @@ export default function Jobs() {
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-6xl mx-auto">
         
-        {/* Header */}
+     
         <button
           onClick={() => navigate('/')}
           className="mb-8 text-gray-600 hover:text-gray-900 text-sm"
@@ -41,10 +40,10 @@ export default function Jobs() {
           ← Back to Search
         </button>
 
-        {/* Top Section - Repo Info, AI Analysis, and Jobs Summary */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           
-          {/* Repo Info */}
+
           <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Repository</h2>
             <h1 className="text-2xl font-bold text-gray-900 mb-3">{repoData.repo}</h1>
@@ -72,9 +71,9 @@ export default function Jobs() {
             </div>
           </div>
 
-          {/* AI Analysis & Job Keywords */}
+
           <div className="lg:col-span-2 space-y-6">
-            {/* AI Analysis */}
+
             {aiAnalysis && (
               <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
                 <div className="flex items-center gap-2 mb-4">
@@ -92,7 +91,7 @@ export default function Jobs() {
               </div>
             )}
 
-            {/* Job Keywords */}
+
             {aiAnalysis && aiAnalysis.keywords && (
               <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                 <div className="flex items-center gap-2 mb-4">
@@ -114,7 +113,7 @@ export default function Jobs() {
               </div>
             )}
 
-            {/* Jobs Summary */}
+
             <div className="bg-green-50 rounded-xl p-6 border border-green-200">
               <h2 className="text-xs font-semibold text-green-900 uppercase tracking-wide mb-3">Matching Jobs</h2>
               <div className="flex items-baseline gap-3 mb-2">
@@ -128,7 +127,7 @@ export default function Jobs() {
           </div>
         </div>
 
-        {/* Jobs List */}
+
         <div className="space-y-4">
           {jobs.map((job, idx) => (
             <div key={job.id || idx} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
