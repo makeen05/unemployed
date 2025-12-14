@@ -8,7 +8,7 @@ export const scrapeJobs = async (req, res) => {
       token: process.env.APIFY_TOKEN,
     });
 
-    // Convert languages array to string
+    
     const searchTerm = repoData.languages.slice(0, 3).join(' ');
 
     const input = {

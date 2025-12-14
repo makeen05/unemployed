@@ -1,14 +1,14 @@
 import { Octokit } from 'octokit';
 import axios from 'axios';
 
-// Helper: Get Octokit instance (creates it with current env vars)
+
 const getOctokit = () => {
   return new Octokit({ 
     auth: process.env.GITHUB_TOKEN?.trim() 
   });
 };
 
-// Helper: Filter files based on importance
+
 const getImportantFiles = (tree) => {
   const configFiles = ['package.json', 'requirements.txt', 'Gemfile', 'pom.xml', 
     'Cargo.toml', 'go.mod', 'composer.json', 'pubspec.yaml', 'tsconfig.json'];
@@ -53,7 +53,7 @@ export const analyzeRepository = async (req, res) => {
       return res.status(400).json({ error: 'Repository URL is required' });
     }
 
-    // Parse GitHub URL
+
     const urlParts = repoUrl.replace('https://github.com/', '').split('/');
     const owner = urlParts[0];
     const repo = urlParts[1];
@@ -62,20 +62,20 @@ export const analyzeRepository = async (req, res) => {
       return res.status(400).json({ error: 'Invalid GitHub URL format' });
     }
 
-    console.log(`📥 Analyzing: ${owner}/${repo}`);
+    console.log(`Analyzing: ${owner}/${repo}`);
 
-    // Create Octokit instance with current env token
+
     const octokit = getOctokit();
 
-    // STEP 1: Get default branch
+
     const { data: repoData } = await octokit.request('GET /repos/{owner}/{repo}', {
       owner,
       repo,
     });
     const defaultBranch = repoData.default_branch;
-    console.log(`✅ Default branch: ${defaultBranch}`);
+    console.log(`Default branch: ${defaultBranch}`);
 
-    // STEP 2: Fetch README
+
     let readmeContent = '';
     try {
       const readmeData = await octokit.request('GET /repos/{owner}/{repo}/readme', {
@@ -84,20 +84,20 @@ export const analyzeRepository = async (req, res) => {
         headers: { 'X-GitHub-Api-Version': '2022-11-28' }
       });
       readmeContent = Buffer.from(readmeData.data.content, 'base64').toString('utf-8');
-      console.log('✅ README fetched');
+      console.log('README fetched');
     } catch (error) {
-      console.log('⚠️  No README found');
+      console.log('No README found');
     }
 
-    // STEP 3: Fetch languages
+
     const languagesData = await octokit.request('GET /repos/{owner}/{repo}/languages', {
       owner,
       repo,
     });
     const languages = Object.keys(languagesData.data);
-    console.log('✅ Languages:', languages);
+    console.log('Languages:', languages);
 
-    // STEP 4: Get entire file tree (recursive)
+
     const { data: treeData } = await octokit.request('GET /repos/{owner}/{repo}/git/trees/{tree_sha}', {
       owner,
       repo,
@@ -105,13 +105,13 @@ export const analyzeRepository = async (req, res) => {
       recursive: 'true',
     });
 
-    console.log(`✅ Found ${treeData.tree.length} total files in repo`);
+    console.log(`Found ${treeData.tree.length} total files in repo`);
 
-    // STEP 5: Filter important files
+
     const importantFiles = getImportantFiles(treeData.tree);
-    console.log(`✅ Selected ${importantFiles.length} important files to analyze`);
+    console.log(`Selected ${importantFiles.length} important files to analyze`);
 
-    // STEP 6: Fetch file contents
+
     const fileContents = {};
     
     for (const file of importantFiles) {
@@ -124,13 +124,13 @@ export const analyzeRepository = async (req, res) => {
 
         const content = Buffer.from(blob.content, 'base64').toString('utf-8');
         fileContents[file.path] = content.substring(0, 2000);
-        console.log(`✅ Fetched: ${file.path} (priority: ${file.priority})`);
+        console.log(`Fetched: ${file.path} (priority: ${file.priority})`);
       } catch (error) {
-        console.log(`⚠️  Could not fetch ${file.path}`);
+        console.log(` Could not fetch ${file.path}`);
       }
     }
 
-    // STEP 7: Send to AI for analysis (CHANGED PORT TO 5001)
+
     console.log('🤖 Sending to AI for analysis...');
     
     const aiResponse = await axios.post('http://localhost:5001/analyze-repo', {
@@ -142,9 +142,9 @@ export const analyzeRepository = async (req, res) => {
     });
 
     const aiAnalysis = aiResponse.data.analysis;
-    console.log('✅ AI analysis received');
+    console.log('AI analysis received');
 
-    // STEP 8: Prepare final response
+
     const analysisData = {
       owner,
       repo,
@@ -153,11 +153,11 @@ export const analyzeRepository = async (req, res) => {
       languages,
       files: fileContents,
       fileCount: Object.keys(fileContents).length,
-      aiAnalysis: aiAnalysis, // Include AI-generated keywords and description
+      aiAnalysis: aiAnalysis,
       timestamp: new Date().toISOString(),
     };
 
-    console.log('✅ Analysis complete -', analysisData.fileCount, 'files analyzed');
+    console.log('Analysis complete -', analysisData.fileCount, 'files analyzed');
 
     res.json({
       success: true,
@@ -166,7 +166,7 @@ export const analyzeRepository = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('Error:', error.message);
     
     if (error.status === 404) {
       return res.status(404).json({ error: 'Repository not found' });
@@ -184,7 +184,7 @@ export const analyzeRepository = async (req, res) => {
 
 export const checkRateLimit = async (req, res) => {
   try {
-    // Create Octokit instance with current env token
+
     const octokit = getOctokit();
     const { data } = await octokit.request('GET /rate_limit');
     
@@ -195,8 +195,8 @@ export const checkRateLimit = async (req, res) => {
         reset: new Date(data.resources.core.reset * 1000).toLocaleString(),
       },
       message: data.resources.core.remaining === 0 
-        ? '⚠️  Rate limit exhausted! Wait until reset time.'
-        : '✅ You have API calls remaining'
+        ? 'Rate limit exhausted, Wait until reset time.'
+        : 'You have API calls remaining'
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
