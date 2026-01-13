@@ -20,7 +20,7 @@ function Home() {
     try {
       setLoadingStep('Analyzing repository...'); 
       console.log('Step 1: Analyzing repo...'); 
-      const response = await axios.post('http://localhost:3000/api/analyze', {
+      const response = await axios.post('/api/analyze', {
         repoUrl
       });
   
@@ -29,7 +29,7 @@ function Home() {
   
       setLoadingStep('Finding job listings...'); 
       console.log('Step 2: Scraping jobs...'); 
-      const jobsResponse = await axios.post('http://localhost:3000/api/scrape-jobs', {
+      const jobsResponse = await axios.post('/api/scrape-jobs', {
         repoData, 
         city, 
         country, 

@@ -133,7 +133,8 @@ export const analyzeRepository = async (req, res) => {
 
     console.log('🤖 Sending to AI for analysis...');
     
-    const aiResponse = await axios.post('http://localhost:5001/analyze-repo', {
+    const AI_SERVICE_URL = process.env.FLASK_URL || 'http://localhost:5001';
+    const aiResponse = await axios.post(`${AI_SERVICE_URL}/analyze-repo`, {      
       owner,
       repo,
       languages,
